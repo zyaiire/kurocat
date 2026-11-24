@@ -574,12 +574,14 @@ export class KuroCatEngine {
   }
 
   public setCatAppearance(breedId: string, skin?: CatSkinConfig | null): void {
+    const goldenBlack = breedId === 'gold-black' && (!skin || skin.builtin);
+    this.blackEyeColor = goldenBlack ? skin?.eyeColorBottom ?? '#FFDF58' : '#d4f044';
     if (breedId === 'dafeiyu') {
       this.catBreed = 'dafeiyu';
       this.customSkin = null;
       catAudio.setPurrIntensity(0);
-    } else if ((breedId === 'black' || breedId === 'ragdoll') && (!skin || skin.builtin)) {
-      this.catBreed = breedId;
+    } else if (goldenBlack || ((breedId === 'black' || breedId === 'ragdoll') && (!skin || skin.builtin))) {
+      this.catBreed = breedId === 'ragdoll' ? 'ragdoll' : 'black';
       this.customSkin = null;
     } else if (skin) {
       this.catBreed = 'black';
@@ -3239,7 +3241,7 @@ export class KuroCatEngine {
       ctx.translate(ex, eyeY);
 
       if (this.privacyClose > 0.45 || this.sleepAmount > 0.52) {
-        ctx.strokeStyle = isRagdoll ? '#212533' : '#d4f044';
+        ctx.strokeStyle = isRagdoll ? '#212533' : this.blackEyeColor;
         ctx.lineWidth = 2.9;
         ctx.lineCap = 'round';
         ctx.beginPath();
@@ -3269,7 +3271,7 @@ export class KuroCatEngine {
           ctx.stroke();
         } else {
           // Exact sleek thin horizontal lazy-slanted lemon-chartreuse slits from user's reference photo (NO grey lid blob!)
-          ctx.strokeStyle = '#d4f044';
+          ctx.strokeStyle = this.blackEyeColor;
           ctx.lineWidth = 2.9;
           ctx.lineCap = 'round';
           ctx.beginPath();
@@ -3311,7 +3313,7 @@ export class KuroCatEngine {
         irisGrad.addColorStop(1.0, '#a3d2f2');
         ctx.fillStyle = irisGrad;
       } else {
-        ctx.fillStyle = '#d4f044';
+        ctx.fillStyle = this.blackEyeColor;
       }
 
       ctx.beginPath();
