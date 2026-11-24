@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 fn default_cat_breed() -> String {
-    "black".to_string()
+    "gold-black".to_string()
 }
 
 fn default_mcp_enabled() -> bool {
@@ -72,12 +72,14 @@ pub fn default_keyboard_layout() -> String {
     if cfg!(feature = "layout-108") {
         "108".to_string()
     } else {
-        "65".to_string()
+        "k98m".to_string()
     }
 }
 
 pub fn normalize_keyboard_layout(raw: &str) -> String {
-    if raw.trim() == "108" {
+    if raw.trim() == "k98m" {
+        "k98m".to_string()
+    } else if raw.trim() == "108" {
         "108".to_string()
     } else {
         "65".to_string()

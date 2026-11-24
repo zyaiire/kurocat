@@ -167,6 +167,7 @@ pub fn setup_tray(app: &AppHandle, initial: &AppSettings) -> tauri::Result<()> {
     )?;
 
     let kb_65 = MenuItem::with_id(app, "kb_65", "65% 紧凑键盘", true, None::<&str>)?;
+    let kb_k98m = MenuItem::with_id(app, "kb_k98m", "罗技 K98M Plus · 蓝紫", true, None::<&str>)?;
     let kb_108 = MenuItem::with_id(app, "kb_108", "108 键全尺寸（含小键盘）", true, None::<&str>)?;
     let kb_sep = PredefinedMenuItem::separator(app)?;
     let kb_cat = MenuItem::with_id(app, "kb_cat", "面向猫咪（180° 真实视角）", true, None::<&str>)?;
@@ -175,7 +176,7 @@ pub fn setup_tray(app: &AppHandle, initial: &AppSettings) -> tauri::Result<()> {
         app,
         "键盘配列与方向",
         true,
-        &[&kb_65, &kb_108, &kb_sep, &kb_cat, &kb_viewer],
+        &[&kb_65, &kb_108, &kb_k98m, &kb_sep, &kb_cat, &kb_viewer],
     )?;
 
     let tail_smart = MenuItem::with_id(app, "tail_smart", "智能第三只手（忙时出尾）", true, None::<&str>)?;
@@ -569,6 +570,7 @@ pub fn setup_tray(app: &AppHandle, initial: &AppSettings) -> tauri::Result<()> {
                 "scale_125" => apply_scale_and_save(app, 1.25),
                 "scale_150" => apply_scale_and_save(app, 1.5),
                 "kb_65" => apply_keyboard_layout_and_save(app, "65"),
+                "kb_k98m" => apply_keyboard_layout_and_save(app, "k98m"),
                 "kb_108" => apply_keyboard_layout_and_save(app, "108"),
                 "kb_cat" => apply_keyboard_orientation_and_save(app, "cat"),
                 "kb_viewer" => apply_keyboard_orientation_and_save(app, "viewer"),

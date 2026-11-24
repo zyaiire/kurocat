@@ -1,4 +1,12 @@
-export type KeyboardLayoutId = '65' | '108';
+export type KeyboardLayoutId = '65' | '108' | 'k98m';
+
+export function isKeyboardLayout(value: unknown): value is KeyboardLayoutId {
+  return value === '65' || value === '108' || value === 'k98m';
+}
+
+export function normalizeLayout(value: unknown): KeyboardLayoutId {
+  return isKeyboardLayout(value) ? value : '65';
+}
 
 export interface KeySpec {
   id: string;
@@ -225,6 +233,28 @@ export const KEYBOARD_KEYS_108: KeySpec[] = [
   { id: 'np_dot', label: '.', bubble: 'Num.', row: 5, rowY: 5.25, uStart: NUM_X + 2, uWidth: 1, vkCodes: [0x6e] },
 ];
 
+// ALTO KEYS uses a compressed bottom row and a single-unit numpad zero.
+const k98Positions: Record<string, [number, number]> = {
+  rshift: [12.25, 1.75], up: [14.25, 1],
+  ralt: [10, 1], rwin: [11, 1], rctrl: [12, 1],
+  left: [13.25, 1], down: [14.25, 1], right: [15.25, 1],
+  np_0: [16.25, 1], del: [15.25, 1],
+};
+const omittedK98Keys = new Set(['prt', 'scr', 'pau', 'ins', 'home', 'pgup', 'end', 'pgdn', 'menu', 'm_mute']);
+const k98Keys = KEYBOARD_KEYS_108.filter(key => !omittedK98Keys.has(key.id)).map(key => {
+  const numpad = key.uStart >= NUM_X;
+  const [uStart, uWidth] = k98Positions[key.id] ?? [
+    numpad ? 15.25 + (key.uStart - NUM_X) : key.uStart, key.uWidth,
+  ];
+  const row = key.id === 'del' ? 0 : key.row;
+  return { ...key, uStart, uWidth, row, rowY: row === 0 ? 0 : row + 0.18 };
+});
+
+export function isK98LightKey(key: KeySpec): boolean {
+  return key.id === 'space' || key.id === 'enter' || key.id === 'esc' ||
+    (key.row === 0 && key.uStart >= 15);
+}
+
 export const KEYBOARD_KEYS = KEYBOARD_KEYS_65;
 
 export const KEYBOARD_LAYOUTS: Record<KeyboardLayoutId, KeyboardLayoutDef> = {
@@ -234,6 +264,7 @@ export const KEYBOARD_LAYOUTS: Record<KeyboardLayoutId, KeyboardLayoutDef> = {
     totalRows: 5,
     keys: KEYBOARD_KEYS_65,
   },
+  k98m: { id: 'k98m', totalUnits: 19.25, totalRows: 6.18, keys: k98Keys },
   '108': {
     id: '108',
     totalUnits: 22.7,
@@ -244,10 +275,11 @@ export const KEYBOARD_LAYOUTS: Record<KeyboardLayoutId, KeyboardLayoutDef> = {
 
 const vkLookups: Record<KeyboardLayoutId, Map<number, KeySpec>> = {
   '65': new Map<number, KeySpec>(),
+  k98m: new Map<number, KeySpec>(),
   '108': new Map<number, KeySpec>(),
 };
 
-for (const layoutId of ['65', '108'] as const) {
+for (const layoutId of ['65', '108', 'k98m'] as const) {
   for (const key of KEYBOARD_LAYOUTS[layoutId].keys) {
     for (const vk of key.vkCodes) {
       vkLookups[layoutId].set(vk, key);

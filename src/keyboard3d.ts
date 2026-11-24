@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {
   getKeyboardLayout,
+  isK98LightKey,
   resolveKeyByVk,
   type KeyboardLayoutId,
   type KeySpec,
@@ -175,8 +176,8 @@ interface KeyEntry3D {
 
 const legendTextureCache = new Map<string, THREE.CanvasTexture>();
 
-function makeKeyLegendTexture(label: string, accent: 'base' | 'mod' | 'orange', rotated180: boolean): THREE.CanvasTexture {
-  const key = `${label}|${accent}|${rotated180 ? 1 : 0}`;
+function makeKeyLegendTexture(label: string, accent: 'base' | 'mod' | 'orange', rotated180: boolean, capColor?: string): THREE.CanvasTexture {
+  const key = `${capColor ?? accent}|${label}|${rotated180 ? 1 : 0}`;
   const cached = legendTextureCache.get(key);
   if (cached) return cached;
 
@@ -184,7 +185,7 @@ function makeKeyLegendTexture(label: string, accent: 'base' | 'mod' | 'orange', 
   c.width = 128;
   c.height = 128;
   const g = c.getContext('2d')!;
-  g.fillStyle = accent === 'orange' ? '#f59b2e' : accent === 'mod' ? '#e6e4db' : '#f9f8f3';
+  g.fillStyle = capColor ?? (accent === 'orange' ? '#f59b2e' : accent === 'mod' ? '#e6e4db' : '#f9f8f3');
   g.fillRect(0, 0, 128, 128);
 
   // Sculpted concave PBT keycap sheen
@@ -200,7 +201,7 @@ function makeKeyLegendTexture(label: string, accent: 'base' | 'mod' | 'orange', 
     if (rotated180) g.rotate(Math.PI);
     const fontSize = label.length >= 4 ? 32 : label.length === 3 ? 38 : label.length === 2 ? 46 : 56;
     g.font = `700 ${fontSize}px "Segoe UI", system-ui, sans-serif`;
-    g.fillStyle = accent === 'orange' ? '#ffffff' : '#2b2d34';
+    g.fillStyle = (capColor ? capColor === '#7886bc' : accent === 'orange') ? '#ffffff' : '#2b2d34';
     g.textAlign = 'center';
     g.textBaseline = 'middle';
     g.fillText(label, 0, 2);
@@ -230,7 +231,7 @@ function makeSoftShadowTexture(): THREE.CanvasTexture {
   return tex;
 }
 
-function makeMouseLabelTexture(char: 'L' | 'R', rotated180: boolean): THREE.CanvasTexture {
+function makeMouseLabelTexture(char: 'L' | 'R', rotated180: boolean, capColor?: string): THREE.CanvasTexture {
   const key = `mouse:${char}:${rotated180 ? 1 : 0}`;
   const hit = legendTextureCache.get(key);
   if (hit) return hit;
@@ -253,7 +254,7 @@ function makeMouseLabelTexture(char: 'L' | 'R', rotated180: boolean): THREE.Canv
   return tex;
 }
 
-function makeRoundedSlab(w: number, d: number, h: number, r: number, color: string, y: number): THREE.Mesh {
+function makeRoundedSlab(w: number, d: number, h: number, r: number, color: string, y: number, opacity = 1): THREE.Mesh {
   const s = new THREE.Shape();
   const x0 = -w / 2;
   const z0 = -d / 2;
@@ -269,7 +270,7 @@ function makeRoundedSlab(w: number, d: number, h: number, r: number, color: stri
   const g = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: false, curveSegments: 6 });
   g.rotateX(Math.PI / 2);
   g.translate(0, y + h, 0);
-  return new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color }));
+  return new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color, opacity, transparent: opacity < 1 }));
 }
 
 /**
@@ -284,6 +285,7 @@ export class KeyboardAndMouse3D {
 
   private readonly capGeo: THREE.CylinderGeometry;
   private readonly sideBaseMat = new THREE.MeshBasicMaterial({ color: '#dad7cd' });
+  private readonly sideK98Mat = new THREE.MeshBasicMaterial({ color: '#6874a3' });
   private readonly sideModMat = new THREE.MeshBasicMaterial({ color: '#c4c0b4' });
   private readonly sideOrangeMat = new THREE.MeshBasicMaterial({ color: '#c4741a' });
   private readonly capBottomMat = new THREE.MeshBasicMaterial({ color: '#1b1c20' });
@@ -507,7 +509,8 @@ export class KeyboardAndMouse3D {
     }
 
     const layout = getKeyboardLayout(layoutId);
-    const is108 = layoutId === '108';
+    const is108 = layoutId !== '65';
+    const isK98 = layoutId === 'k98m';
     const isCatFacing = orientation === 'cat';
 
     // Sync mouse orientation (180° cat-facing vs 0° viewer-facing)
@@ -537,9 +540,9 @@ export class KeyboardAndMouse3D {
     kbShadow.position.set(0, 0.002, 0.025);
 
     // Sleek matte dark-graphite anodized chassis + subtle upper chamfer edge (ZERO white sticker halo!)
-    const baseChassis = makeRoundedSlab(W, D, this.boardH, 0.068, '#202229', 0);
-    const topBezel = makeRoundedSlab(W - 0.014, D - 0.014, 0.014, 0.060, '#2c2f38', this.boardH - 0.008);
-    const plate = makeRoundedSlab(W - 0.062, D - 0.062, 0.008, 0.044, '#181a20', this.boardH + 0.004);
+    const baseChassis = makeRoundedSlab(W, D, this.boardH, 0.068, isK98 ? '#c1c3d5' : '#202229', 0, isK98 ? 0.82 : 1);
+    const topBezel = makeRoundedSlab(W - 0.014, D - 0.014, 0.014, 0.060, isK98 ? '#ebeaf4' : '#2c2f38', this.boardH - 0.008);
+    const plate = makeRoundedSlab(W - 0.062, D - 0.062, 0.008, 0.044, isK98 ? '#b9bbcd' : '#181a20', this.boardH + 0.004);
     this.boardGroup.add(kbShadow, baseChassis, topBezel, plate);
 
     const baseColors = {
@@ -562,9 +565,10 @@ export class KeyboardAndMouse3D {
       const accent = spec.accent === 'orange' ? 'orange' : spec.accent === 'mod' ? 'mod' : 'base';
 
       const legendText = spec.id === 'space' ? '' : spec.id === 'esc' ? 'Esc' : spec.label;
-      const tex = makeKeyLegendTexture(legendText, accent, isCatFacing);
+      const tex = makeKeyLegendTexture(legendText, accent, isCatFacing,
+        isK98 ? (isK98LightKey(spec) ? '#e5e3de' : '#7886bc') : undefined);
       const topMat = new THREE.MeshBasicMaterial({ map: tex, color: baseColors[accent].clone() });
-      const sideMat =
+      const sideMat = isK98 ? (isK98LightKey(spec) ? this.sideBaseMat : this.sideK98Mat) :
         accent === 'orange' ? this.sideOrangeMat : accent === 'mod' ? this.sideModMat : this.sideBaseMat;
 
       const cap = new THREE.Mesh(this.capGeo, [sideMat, topMat, this.capBottomMat]);

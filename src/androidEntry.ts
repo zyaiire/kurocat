@@ -1,7 +1,7 @@
 import { KuroCatEngine, type KeyboardOrientation } from './catEngine';
 import { BUILTIN_WEB_CATS } from '../website/src/builtinCats';
 import { catAudio } from './audio';
-import type { KeyboardLayoutId } from './keyboardLayout';
+import { normalizeLayout, type KeyboardLayoutId } from './keyboardLayout';
 
 interface AndroidSettingsPayload {
   catBreed?: string;
@@ -42,7 +42,7 @@ function applySettings(payload: AndroidSettingsPayload): void {
   const skin = BUILTIN_WEB_CATS.find((c) => c.id === breedId) ?? BUILTIN_WEB_CATS[0];
   engine.setCatAppearance(skin.id, skin);
 
-  const layout: KeyboardLayoutId = payload.keyboardLayout === '108' ? '108' : '65';
+  const layout: KeyboardLayoutId = normalizeLayout(payload.keyboardLayout);
   const orient: KeyboardOrientation = payload.keyboardOrientation === 'viewer' ? 'viewer' : 'cat';
   engine.setKeyboardConfig(layout, orient);
 

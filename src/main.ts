@@ -11,6 +11,8 @@ import {
 import { catAudio } from './audio';
 import { DEFAULT_BUILTIN_CATS, type CatSkinConfig } from './catSkins';
 import {
+  normalizeLayout,
+  isKeyboardLayout,
   getKeyboardLayout,
   resolveKeyByVk,
   type KeyboardLayoutDef,
@@ -183,7 +185,7 @@ function wants3DNow(): boolean {
 function syncEngine3DState(): void {
   if (!engine3d) return;
   const activeCat = catList.find((c) => c.id === settings.catBreed) ?? catList[0];
-  const kbLayout: KeyboardLayoutId = settings.keyboardLayout === '108' ? '108' : '65';
+  const kbLayout: KeyboardLayoutId = normalizeLayout(settings.keyboardLayout);
   const kbOrient: KeyboardOrientation = settings.keyboardOrientation === 'viewer' ? 'viewer' : 'cat';
   const tailMode: TailKeyMode =
     settings.tailKeyMode === 'custom' ||
@@ -306,7 +308,7 @@ function syncMenuUI(): void {
     updateScaleSliderVisual(settings.scale);
   }
 
-  const kbLayout: KeyboardLayoutId = settings.keyboardLayout === '108' ? '108' : '65';
+  const kbLayout: KeyboardLayoutId = normalizeLayout(settings.keyboardLayout);
   const kbOrient: KeyboardOrientation = settings.keyboardOrientation === 'viewer' ? 'viewer' : 'cat';
   const tailMode: TailKeyMode =
     settings.tailKeyMode === 'custom' ||
@@ -1064,7 +1066,7 @@ async function bootstrap(): Promise<void> {
     }
 
     const kbLayoutAttr = target.dataset.kblayout;
-    if (kbLayoutAttr === '65' || kbLayoutAttr === '108') {
+    if (isKeyboardLayout(kbLayoutAttr)) {
       void applySettingsPatch({ keyboardLayout: kbLayoutAttr });
       closeContextMenu();
       return;

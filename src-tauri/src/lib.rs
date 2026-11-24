@@ -43,7 +43,7 @@ pub const WIN7_MIN_WINDOW_WIDTH: f64 = 260.0;
 pub const WIN7_MIN_WINDOW_HEIGHT: f64 = 410.0;
 
 pub fn base_dimensions(layout: &str) -> (f64, f64) {
-    if layout == "108" {
+    if layout == "108" || layout == "k98m" {
         (BASE_WIDTH_108, BASE_HEIGHT_108)
     } else {
         (BASE_WIDTH, BASE_HEIGHT)
@@ -1708,7 +1708,7 @@ fn start_hit_test_loop(
                 (
                     s.click_through_locked,
                     s.always_on_top,
-                    s.keyboard_layout == "108",
+                    s.keyboard_layout == "108" || s.keyboard_layout == "k98m",
                     s.scale.clamp(0.20, 1.50),
                     s.keyboard_layout.clone(),
                 )

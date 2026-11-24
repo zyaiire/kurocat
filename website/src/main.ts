@@ -6,7 +6,7 @@ import {
   type TailKeyMode,
 } from '../../src/catEngine';
 import { catAudio } from '../../src/audio';
-import { resolveKeyByVk, type KeyboardLayoutId } from '../../src/keyboardLayout';
+import { normalizeLayout, resolveKeyByVk, type KeyboardLayoutId } from '../../src/keyboardLayout';
 import { BUILTIN_WEB_CATS } from './builtinCats';
 import {
   KUROCAT_I18N,
@@ -256,9 +256,9 @@ function initPlayground(): void {
   let lastOrbitX = 0;
   let lastOrbitY = 0;
 
-  let currentLayout: KeyboardLayoutId = '65';
-  let currentOrient: KeyboardOrientation = 'cat';
-  let currentSkinId = 'black';
+  let currentLayout: KeyboardLayoutId = 'k98m';
+  let currentOrient: KeyboardOrientation = 'viewer';
+  let currentSkinId = 'gold-black';
   let currentTailMode: TailKeyMode = 'smart';
   let currentTailKeyIds: string[] = [...DEFAULT_TAIL_KEY_IDS];
   let tailPickerOpen = false;
@@ -418,7 +418,7 @@ function initPlayground(): void {
     }
   };
 
-  engine.setCatAppearance('black', BUILTIN_WEB_CATS[0]);
+  engine.setCatAppearance(currentSkinId, getActiveSkin());
   engine.setKeyboardConfig(currentLayout, currentOrient);
   engine.start();
   syncTailUI();
@@ -547,7 +547,7 @@ function initPlayground(): void {
 
   document.querySelectorAll('[data-layout]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const val = (btn as HTMLElement).dataset.layout === '108' ? '108' : '65';
+      const val = normalizeLayout((btn as HTMLElement).dataset.layout);
       setLayout(val);
     });
   });

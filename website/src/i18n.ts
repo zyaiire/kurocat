@@ -59,7 +59,7 @@ export interface KuroCatI18nBundle {
     latestVersion: (tag: string) => string;
     heroDownloadWin: (size: string) => string;
     heroDownloadMac: (size: string) => string;
-    layout: (id: '65' | '108') => string;
+    layout: (id: '65' | '108' | 'k98m') => string;
     orient: (o: 'cat' | 'viewer') => string;
     tailPickerBtn: (open: boolean, count: number) => string;
     tailPickerTitleDefault: (count: number) => string;
@@ -283,7 +283,7 @@ export const KUROCAT_I18N: Record<Locale, KuroCatI18nBundle> = {
       latestVersion: (tag) => `最新版本 ${tag}`,
       heroDownloadWin: (size) => `免费下载 Windows 版（${size}）`,
       heroDownloadMac: (size) => `免费下载 macOS 通用版（${size}）`,
-      layout: (id) => (id === '108' ? '108 全尺寸' : '65% 紧凑'),
+      layout: (id) => (id === 'k98m' ? 'K98M Plus' : id === '108' ? '108 全尺寸' : '65% 紧凑'),
       orient: (o) => (o === 'viewer' ? '面向观众' : '面向猫咪'),
       tailPickerBtn: (open, count) =>
         open ? `✓ 正在点选（已选 ${count} 键）` : `🐾 点选尾巴按键（${count}）`,
@@ -510,7 +510,7 @@ export const KUROCAT_I18N: Record<Locale, KuroCatI18nBundle> = {
       latestVersion: (tag) => `Latest ${tag}`,
       heroDownloadWin: (size) => `Download for Windows (${size})`,
       heroDownloadMac: (size) => `Download for macOS (${size})`,
-      layout: (id) => (id === '108' ? '108 Full-Size' : '65% Compact'),
+      layout: (id) => (id === 'k98m' ? 'K98M Plus' : id === '108' ? '108 Full-Size' : '65% Compact'),
       orient: (o) => (o === 'viewer' ? 'Viewer View' : 'Cat View'),
       tailPickerBtn: (open, count) =>
         open ? `✓ Picking (${count} selected)` : `🐾 Pick Tail Keys (${count})`,
@@ -737,7 +737,7 @@ export const KUROCAT_I18N: Record<Locale, KuroCatI18nBundle> = {
       latestVersion: (tag) => `最新版 ${tag}`,
       heroDownloadWin: (size) => `Windows 版を無料ダウンロード（${size}）`,
       heroDownloadMac: (size) => `macOS 版を無料ダウンロード（${size}）`,
-      layout: (id) => (id === '108' ? '108 フルサイズ' : '65% コンパクト'),
+      layout: (id) => (id === 'k98m' ? 'K98M Plus' : id === '108' ? '108 フルサイズ' : '65% コンパクト'),
       orient: (o) => (o === 'viewer' ? '視聴者目線' : '猫目線'),
       tailPickerBtn: (open, count) =>
         open ? `✓ 選択中（${count} キー）` : `🐾 しっぽキー選択（${count}）`,

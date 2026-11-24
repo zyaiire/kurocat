@@ -1971,7 +1971,7 @@ export class KuroCatEngine3D {
     // 1) Camera smooth 360° turntable framing (auto-fits square desktop, 108-key, mobile & wide web with zero clipping!)
     const az = (this.sOrbitAz.step(this.orbitAzimuthTarget, dt) * Math.PI) / 180;
     const el = (this.sOrbitEl.step(this.orbitElevTarget, dt) * Math.PI) / 180;
-    const is108 = this.desk.getLayoutId() === '108';
+    const is108 = this.desk.getLayoutId() !== '65';
     const baseDist = is108 ? 9.7 : 8.1;
     const reqHalfW = is108 ? 1.98 : 1.56;
     const tanHalfFov = Math.tan((this.camera.fov * Math.PI) / 360);

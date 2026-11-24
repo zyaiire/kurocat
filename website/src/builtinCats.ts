@@ -1,4 +1,4 @@
-import type { CatSkinConfig } from '../../src/catSkins';
+import { goldenBlackCat, type CatSkinConfig } from '../../src/catSkins';
 
 export const BUILTIN_WEB_CATS: CatSkinConfig[] = [
   {
@@ -232,3 +232,5 @@ export const BUILTIN_WEB_CATS: CatSkinConfig[] = [
     spots: [],
   },
 ];
+
+BUILTIN_WEB_CATS.push(goldenBlackCat(BUILTIN_WEB_CATS[0]));

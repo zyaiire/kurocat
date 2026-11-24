@@ -154,7 +154,7 @@ pub fn sanitize_cat_id(raw: &str) -> String {
 }
 
 pub fn builtin_cats() -> Vec<CatSkinConfig> {
-    vec![
+    let mut cats = vec![
         CatSkinConfig {
             id: "black".to_string(),
             name: "小黑猫".to_string(),
@@ -456,7 +456,17 @@ pub fn builtin_cats() -> Vec<CatSkinConfig> {
             accent_side_color: Some("#2563eb".to_string()),
             spots: vec![],
         },
-    ]
+    ];
+    let gold = CatSkinConfig {
+        id: "gold-black".into(),
+        name: "金瞳小黑猫".into(),
+        eye_color_top: "#E8A600".into(),
+        eye_color_bottom: Some("#FFDF58".into()),
+        squint_color: Some("#FFCF40".into()),
+        ..cats[0].clone()
+    };
+    cats.push(gold);
+    cats
 }
 
 pub fn load_custom_cats() -> Vec<CatSkinConfig> {

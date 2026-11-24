@@ -83,6 +83,7 @@ export function resolveFurPalette3D(skin: CatSkinConfig, style: RenderStyle3D): 
   const accentRight = isWarmAccent ? '#58c7ff' : '#ff7b3b';
 
   switch (skin.id) {
+    case 'gold-black':
     case 'black':
       return {
         id: 'black',
@@ -112,11 +113,11 @@ export function resolveFurPalette3D(skin: CatSkinConfig, style: RenderStyle3D): 
         whiskerOpacity: 0.56,
         nose: null,
         mouth: null,
-        eyeTop: '#d7f346',
-        eyeBottom: '#bde62c',
+        eyeTop: skin.id === 'gold-black' ? skin.eyeColorTop : '#d7f346',
+        eyeBottom: skin.id === 'gold-black' ? skin.eyeColorBottom ?? skin.eyeColorTop : '#bde62c',
         pupil: '#0c0d0f',
-        lid: '#d4f044',
-        squintLine: '#d4f044',
+        lid: skin.id === 'gold-black' ? skin.eyeColorTop : '#d4f044',
+        squintLine: skin.id === 'gold-black' ? skin.squintColor ?? skin.eyeColorTop : '#d4f044',
         eyeCatchlight: false,
         isDarkFur: true,
         lightContour: null,

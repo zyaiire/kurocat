@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { DEFAULT_TAIL_KEY_IDS, type KeyboardOrientation, type TailKeyMode } from './catEngine';
 import { DEFAULT_BUILTIN_CATS, type CatSkinConfig } from './catSkins';
-import type { KeyboardLayoutId } from './keyboardLayout';
+import { normalizeLayout, isKeyboardLayout, type KeyboardLayoutId } from './keyboardLayout';
 
 interface AppSettings {
   x: number | null;
@@ -148,7 +148,7 @@ function syncUI(): void {
     updateScaleSliderVisual(settings.scale);
   }
 
-  const kbLayout: KeyboardLayoutId = settings.keyboardLayout === '108' ? '108' : '65';
+  const kbLayout: KeyboardLayoutId = normalizeLayout(settings.keyboardLayout);
   const kbOrient: KeyboardOrientation = settings.keyboardOrientation === 'viewer' ? 'viewer' : 'cat';
   document.querySelectorAll<HTMLButtonElement>('[data-kblayout]').forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.kblayout === kbLayout);
@@ -422,7 +422,7 @@ async function bootstrap(): Promise<void> {
     }
 
     const kbLayoutAttr = target.dataset.kblayout;
-    if (kbLayoutAttr === '65' || kbLayoutAttr === '108') {
+    if (isKeyboardLayout(kbLayoutAttr)) {
       void applySettingsPatch({ keyboardLayout: kbLayoutAttr });
       return;
     }

@@ -186,6 +186,11 @@ export function resolveCustomSkin(raw: CatSkinConfig): ResolvedSkin {
   };
 }
 
+export function goldenBlackCat(black: CatSkinConfig): CatSkinConfig {
+  return { ...black, id: 'gold-black', name: '金瞳小黑猫', eyeColorTop: '#E8A600',
+    eyeColorBottom: '#FFDF58', squintColor: '#FFCF40' };
+}
+
 export const DEFAULT_BUILTIN_CATS: CatSkinConfig[] = [
   {
     id: 'black',
@@ -218,3 +223,5 @@ export const DEFAULT_BUILTIN_CATS: CatSkinConfig[] = [
     accentSideColor: '#2563eb',
   },
 ];
+
+DEFAULT_BUILTIN_CATS.push(goldenBlackCat(DEFAULT_BUILTIN_CATS[0]));
