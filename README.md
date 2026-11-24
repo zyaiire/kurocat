@@ -1,5 +1,7 @@
 # 🐈‍⬛ KuroCat — Open-Source Desktop Typing Cat Pet · 桌面打字小黑猫伴侣
 
+**Windows 个人版** · [配置蓝紫 K98M Plus 与经典金瞳小黑猫](./docs/windows-k98m.md)
+
 <p align="center">
   <strong>🇨🇳 简体中文</strong> &nbsp;|&nbsp;
   <a href="./README.en.md">🇺🇸 English</a> &nbsp;|&nbsp;
