@@ -231,6 +231,7 @@ export class KuroCatEngine {
   public privacyMode = false;
   public onAfterRender: (() => void) | null = null;
   public catBreed: CatBreed = 'black';
+  private blackEyeColor = '#d4f044';
   public customSkin: ResolvedSkin | null = null;
   public keyboardLayout: KeyboardLayoutId = '65';
   public keyboardOrientation: KeyboardOrientation = 'cat';
